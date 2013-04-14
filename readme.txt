@@ -1,1 +1,1 @@
-hello, this is  c_controller
+hello world
