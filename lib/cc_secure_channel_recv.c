@@ -198,11 +198,14 @@ cc_secure_channel_read(sw_info* cc_sw_info)
 		return CC_ERROR;
 	if(buf == NULL)
 		return CC_ERROR;
-	/*modify by wangq*/
+	/*modify by wangq 20130414*/
+#if 0
 	if(buf != NULL ){
 		//buf = dequeue_message(cc_sw_info->recv_queue);
 		cc_ofpmsg_handle(cc_sw_info, buf);
 	}
+#endif
+	
 
 	return CC_SUCCESS;
 }
