@@ -78,8 +78,8 @@ cc_select_handler(uint16_t type)
 }
 
 
- int
-cc_ofpmsg_handle(sw_info* cc_sw_info ,buffer* buf)
+int
+cc_ofpmsg_handle(sw_info* cc_sw_info, uint8_t type)
 {
 	int ret;
 	struct ofp_header *header;
@@ -88,7 +88,7 @@ cc_ofpmsg_handle(sw_info* cc_sw_info ,buffer* buf)
 	//buffer *buf;
 	log_info_for_cc("get a msg from the secure channel");
 	//buf = dequeue_message(cc_sw_info->recv_queue);
-	header = buf->data;
+	//header = buf->data;
 #if 0
 	ret = validate_openflow_message(buf);
 	if ( ret != 0 ) {
@@ -106,21 +106,20 @@ cc_ofpmsg_handle(sw_info* cc_sw_info ,buffer* buf)
     		return CC_ERROR;
 	}
 #endif
-	func_cb = cc_select_handler(header->type);
-	enqueue_message(cc_sw_info->recv_queue, buf);
+	func_cb = cc_select_handler(type);
+	//enqueue_message(cc_sw_info->recv_queue, buf);
 
 	if(func_cb == NULL)
 	{
 		log_err_for_cc("handlerofmsg error!");
 		return CC_ERROR;
 	}
-	func_cb();
 	ret = pool_add_worker(cc_sw_info->cc_recv_thread_pool, func_cb, cc_sw_info);
 	
 	return CC_SUCCESS;
 }
 
-buffer*
+uint8_t
 cc_recv_from_secure_channel(sw_info *cc_sw_info)
 {
 
@@ -154,7 +153,7 @@ cc_recv_from_secure_channel(sw_info *cc_sw_info)
 		
 	/*input the msg in queue*/
 	//enqueue_message(cc_sw_info->recv_queue,tmp_buff);
-#if 0
+
 	if( tmp_recv_buff_length >= sizeof(struct ofp_header) ) 
 	{
 		
@@ -181,8 +180,8 @@ cc_recv_from_secure_channel(sw_info *cc_sw_info)
 		/*modified by wangq 20130409 */
 		enqueue_message(cc_sw_info->recv_queue, tmp_buff);
 	}	
-#endif
-	return tmp_buff;
+
+	return header->type;
 }
 
 
@@ -193,10 +192,8 @@ cc_secure_channel_read(sw_info* cc_sw_info)
 	buffer* buf;
 	uint8_t type;
 	
-    buf = cc_recv_from_secure_channel(cc_sw_info);
+    type = cc_recv_from_secure_channel(cc_sw_info);
 	if( ret == -1 )
-		return CC_ERROR;
-	if(buf == NULL)
 		return CC_ERROR;
 	/*modify by wangq 20130414*/
 #if 0
@@ -205,7 +202,7 @@ cc_secure_channel_read(sw_info* cc_sw_info)
 		cc_ofpmsg_handle(cc_sw_info, buf);
 	}
 #endif
-	
+	cc_ofpmsg_handle(cc_sw_info, type);
 
 	return CC_SUCCESS;
 }

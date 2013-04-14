@@ -37,8 +37,8 @@
 
 
 
-int cc_close_socket(cc_socket *);
-int cc_conn_accept(cc_socket*  ,sw_info* );
-int cc_init_listenfd(cc_socket* );
+int cc_close_socket(cc_socket *cc_socket);
+int cc_conn_accept(cc_socket *cc_socket);
+int cc_init_listenfd(cc_socket *cc_socket);
 int cc_client_socket_create(char *server_ip, uint16_t port);
 #endif

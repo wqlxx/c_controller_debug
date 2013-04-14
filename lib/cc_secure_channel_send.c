@@ -115,7 +115,7 @@ cc_send_to_secure_channel(sw_info* cc_sw_info,buffer* buf)
 	buffer* msg;
 
 	if(cc_sw_info->send_queue == NULL )
-		cc_sw_info->send_queue = create_message_queue();
+		return CC_ERROR;
 
 	ret = enqueue_message(cc_sw_info->send_queue, buf);
 
@@ -145,20 +145,23 @@ cc_flush_to_secure_channel(sw_info* cc_sw_info)
 	int count = 0;
 	while(( msg = dequeue_message(cc_sw_info->send_queue)) != NULL && count < 50)
 	{
-		struct ofp_header* header = msg;
+		struct ofp_header* header = msg->data;
 		int len = header->length;
 		ssize_t write_length = write( cc_sw_info->cc_switch.cc_socket.fd, msg->data, msg->length);
 		if( write_length < 0 )
 		{
 			if ( errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK ) 
 			{
+				free_buffer(msg);
 				return CC_ERROR;
 			}
-			perror("fail to write a message to secure channel");
+			log_err_for_cc("fail to write a message to secure channel");
+			free_buffer(msg);
 			return CC_ERROR;
 		}else if( (size_t)write_length > 0 && (size_t)write_length < msg->length ) {
 			log_err_for_cc("write msg to secure channel error!");
 			//write( cc_sw_info->cc_switch->cc_socket->fd,msg,sizeof(msg));
+			//free_buffer(msg);
 			continue;
 		}
 		free_buffer(msg);

@@ -42,9 +42,9 @@ FUNC_CB cc_select_handler(uint16_t type);
 
 int cc_secure_channel_read(sw_info* cc_sw_info);
 
-buffer* cc_recv_from_secure_channel(sw_info *cc_sw_info);
+uint8_t cc_recv_from_secure_channel(sw_info *cc_sw_info);
 
-int cc_ofpmsg_handle(sw_info* cc_sw_info, buffer* buf);
+int cc_ofpmsg_handle(sw_info* cc_sw_info, uint8_t type);
 
 #endif
 

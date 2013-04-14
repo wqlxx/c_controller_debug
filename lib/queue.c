@@ -60,7 +60,7 @@ delete_message_queue( message_queue *queue ) {
 
   	while ( queue->head != NULL ) {
     	element = queue->head;
-    	if ( queue->head->data != NULL ) {
+    	if ( element->data != NULL ) {
       		free_buffer( element->data );
     	}
 		free_message_element(element);

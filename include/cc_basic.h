@@ -76,7 +76,6 @@
 #define CC_RECV_BUFFER_SIZE (USHRT_MAX+sizeof( struct ofp_packet_in )-2) 
 #define CC_MAX_SOCKET_BUFF 3*1024*1024
 #define CC_MAX_PORT 52
-#define CC_XID_MAX_ENTRIES 256
 
 #define CC_DEFAULT_MISS_SEND_LEN 128
 #define CC_DEFAULT_CONFIG_FLAGS 0

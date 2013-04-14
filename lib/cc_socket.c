@@ -253,8 +253,8 @@ cc_finalize_sw_info(sw_info *cc_sw_info)
 }
 
 
- int 
-cc_conn_accept(cc_socket* cc_socket_ ,sw_info* cc_sw_info)
+int 
+cc_conn_accept(cc_socket* cc_socket_)
 {
 	struct sockaddr_in switch_addr;
 	socklen_t addr_len;
@@ -262,7 +262,7 @@ cc_conn_accept(cc_socket* cc_socket_ ,sw_info* cc_sw_info)
 	int accept_fd;
 	int ret;
 	socklen_t *len;
-	
+
 	addr_len = sizeof(struct sockaddr_in);
 	accept_fd = accept(cc_socket_->fd,(struct sockaddr*)&switch_addr,&addr_len);
 	if(accept_fd < 0)
@@ -291,8 +291,8 @@ cc_conn_accept(cc_socket* cc_socket_ ,sw_info* cc_sw_info)
 		if(pid == 0)
 		{
 			//debug_wait("/home/ovs/debug");
-			
-			sw_info* cc_sw_info = (sw_info*)malloc(sizeof(sw_info));;
+			sw_info *cc_sw_info;
+			cc_sw_info = (sw_info*)malloc(sizeof(sw_info));;
 			cc_init_sw_info(cc_sw_info);
 
 			cc_sw_info->cc_switch.pid = getpid();
@@ -347,6 +347,7 @@ cc_conn_accept(cc_socket* cc_socket_ ,sw_info* cc_sw_info)
 						//cc_flush_to_secure_channel(cc_sw_info);
 				}
 			}
+			/*modified by wangq 20130414*/
 			cc_finalize_sw_info(cc_sw_info);
 			return CC_SUCCESS;
 			/*may be we should throw a signal to parent to delete the
@@ -355,10 +356,12 @@ cc_conn_accept(cc_socket* cc_socket_ ,sw_info* cc_sw_info)
 		}else{
 			/* this is parent*/
 			//cc_sw_info->cc_switch->pid = pid;
-			//close(accept_fd);
+			close(accept_fd);
 			return CC_SUCCESS;
 		}
 	}
+	close(accept_fd);
+	return CC_SUCCESS;
 }
 
 	

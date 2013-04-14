@@ -74,8 +74,7 @@ cc_polling(cc_socket* cc_socket)
 		}else{
 			if(FD_ISSET(cc_socket->fd, &listen_fdset))
 			{
-				sw_info *cc_sw_info;
-				ret = cc_conn_accept(cc_socket , cc_sw_info);
+				ret = cc_conn_accept(cc_socket);
 				if( ret < 0 ){
 					log_err_for_cc("accept failed!");
 					return CC_ERROR;
