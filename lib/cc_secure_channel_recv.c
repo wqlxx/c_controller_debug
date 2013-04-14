@@ -114,7 +114,7 @@ cc_ofpmsg_handle(sw_info* cc_sw_info ,buffer* buf)
 		log_err_for_cc("handlerofmsg error!");
 		return CC_ERROR;
 	}
-	
+	func_cb();
 	ret = pool_add_worker(cc_sw_info->cc_recv_thread_pool, func_cb, cc_sw_info);
 	
 	return CC_SUCCESS;
